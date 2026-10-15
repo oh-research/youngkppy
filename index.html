@@ -45,12 +45,11 @@
     letter-spacing: -0.02em;
   }
   h1 .young {
-    display: block;
     color: var(--paper);
     -webkit-text-stroke: 2px var(--navy);
     text-stroke: 2px var(--navy);
   }
-  h1 .kppy { display: block; color: var(--navy); }
+  h1 .kppy { margin-left: 0.22em; color: var(--navy); }
   .datebox {
     margin-top: 32px;
     display: flex;
@@ -58,12 +57,80 @@
     gap: 12px 40px;
     color: var(--ink);
   }
-  .datebox div { display: flex; flex-direction: column; gap: 2px; }
+  .datebox > div { display: flex; flex-direction: column; gap: 2px; }
+  .datebox > .venue { flex: 1 1 320px; min-width: 0; }
+  .map { margin-top: 18px; }
+  .map iframe {
+    display: block;
+    width: 100%;
+    height: 280px;
+    border: 1px solid var(--line);
+    background: var(--tint);
+  }
+  .map a {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--navy);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--navy);
+  }
   .datebox .label {
     font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em;
     color: var(--muted); font-weight: 600;
   }
   .datebox .value { font-weight: 600; line-height: 1.35; }
+  .cal {
+    margin-top: 18px;
+    width: 252px;
+    padding: 12px 10px 10px;
+    border: 1px solid var(--line);
+    font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+  .cal-month {
+    margin-bottom: 8px;
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+  }
+  .cal-dow {
+    padding-bottom: 6px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .cal-day {
+    position: relative;
+    height: 28px;
+    line-height: 28px;
+  }
+  .cal-dow.sun,
+  .cal-day.sun { color: #9a534f; }
+  .cal-day.mark { color: var(--navy); font-weight: 700; }
+  .pencil {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: 36px;
+    height: 30px;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
 
   /* Sections */
   section { padding: 56px 0; border-bottom: 1px solid var(--line); }
@@ -123,12 +190,52 @@
 
 <header>
   <div class="wrap">
-    <p class="eyebrow">A young-researchers session of the 101st KPPY Workshop</p>
+    <p class="eyebrow">A session of the 101st KPPY Workshop</p>
     <h1><span class="young">Young</span><span class="kppy">KPPY</span></h1>
     <div class="datebox mono">
-      <div><span class="label">Date</span><span class="value">November 13, 2026 (Friday)</span></div>
-      <div><span class="label">Venue</span><span class="value">B06, College of Natural Sciences<br>Kyungpook National University, Daegu</span></div>
-      <div><span class="label">Talks</span><span class="value">4 invited talks</span></div>
+      <div>
+        <span class="label">Date</span>
+        <span class="value">November 13, 2026 (Friday)</span>
+        <div class="cal" aria-hidden="true">
+          <p class="cal-month">November</p>
+          <div class="cal-grid">
+            <span class="cal-dow sun">S</span><span class="cal-dow">M</span><span class="cal-dow">T</span><span class="cal-dow">W</span><span class="cal-dow">T</span><span class="cal-dow">F</span><span class="cal-dow">S</span>
+            <span class="cal-day sun">1</span><span class="cal-day">2</span><span class="cal-day">3</span><span class="cal-day">4</span><span class="cal-day">5</span><span class="cal-day">6</span><span class="cal-day">7</span>
+            <span class="cal-day sun">8</span><span class="cal-day">9</span><span class="cal-day">10</span><span class="cal-day">11</span><span class="cal-day">12</span>
+            <span class="cal-day mark">13
+              <svg class="pencil" viewBox="0 0 36 30" fill="none">
+                <defs>
+                  <filter id="crayon" x="-18%" y="-22%" width="136%" height="144%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5" result="n"/>
+                    <feDisplacementMap in="SourceGraphic" in2="n" scale="1.05" xChannelSelector="R" yChannelSelector="G"/>
+                  </filter>
+                </defs>
+                <g filter="url(#crayon)" stroke-linecap="round">
+                  <path d="M12.2 6.4C8.2 8.2 5.4 12.6 6.2 17.2 7.2 22.4 12.6 26.2 18.4 25.8 24.8 25.4 30.6 21.2 31.2 15.4 31.8 9.6 26.8 4.4 20.2 4 16.4 3.8 13.6 4.8 11.4 6.8" stroke="#e14a38" stroke-width="2.5"/>
+                  <path d="M13.6 8C10.4 9.6 8.4 13.4 9 17.2 9.8 21.2 14 23.8 18.4 23.4 23.2 23 26.8 19.8 27.2 15.6 27.6 11.6 24.4 8 20.4 7.2" stroke="#b92e24" stroke-width="1.25" opacity="0.72"/>
+                  <path d="M16.8 5.4C19.6 4.6 23.2 5.4 25.8 7.6" stroke="#f3b7aa" stroke-width="0.85"/>
+                </g>
+              </svg>
+            </span>
+            <span class="cal-day">14</span>
+            <span class="cal-day sun">15</span><span class="cal-day">16</span><span class="cal-day">17</span><span class="cal-day">18</span><span class="cal-day">19</span><span class="cal-day">20</span><span class="cal-day">21</span>
+            <span class="cal-day sun">22</span><span class="cal-day">23</span><span class="cal-day">24</span><span class="cal-day">25</span><span class="cal-day">26</span><span class="cal-day">27</span><span class="cal-day">28</span>
+            <span class="cal-day sun">29</span><span class="cal-day">30</span>
+          </div>
+        </div>
+      </div>
+      <div class="venue">
+        <span class="label">Venue</span>
+        <span class="value">B06, College of Natural Sciences<br>Kyungpook National University, Daegu</span>
+        <div class="map">
+          <iframe
+            title="B06, College of Natural Sciences, Kyungpook National University"
+            src="https://www.google.com/maps/embed?pb=!1m3!2m1!1s35.8903656,128.6066322!6i18!3m1!1sen!5m1!1sen"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=35.8903656,128.6066322">Open in Google Maps</a>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -136,9 +243,8 @@
 <section class="about">
   <div class="wrap">
     <h2>About</h2>
-    <p>Young KPPY is a session of the <a href="https://kppy.siggers.work/kppy-101/">101st KPPY Workshop</a> devoted to talks by
-    early-career researchers. Four invited speakers will present their recent work.</p>
-    <p>Everyone is welcome to attend.</p>
+    <p>Young KPPY is a session of the <a href="https://kppy.siggers.work/kppy-101/">101st KPPY Workshop</a>.<br>
+    Everyone is welcome to attend.</p>
   </div>
 </section>
 
@@ -185,14 +291,6 @@
   </div>
 </section>
 
-<section>
-  <div class="wrap">
-    <h2>Venue</h2>
-    <p>B06, College of Natural Sciences,<br>
-    Kyungpook National University, Daegu, Korea.</p>
-  </div>
-</section>
-
 <section class="contact">
   <div class="wrap">
     <h2>Contact</h2>
@@ -203,7 +301,7 @@
 
 <footer>
   <div class="wrap">
-    Young KPPY · November 13, 2026 · B06, College of Natural Sciences, Kyungpook National University
+    Young KPPY · November 13, 2026 · Kyungpook National University
   </div>
 </footer>
 
