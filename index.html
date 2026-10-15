@@ -52,24 +52,50 @@
   h1 .kppy { margin-left: 0.22em; color: var(--navy); }
   .datebox {
     margin-top: 32px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 40px;
+    display: grid;
+    grid-template-columns: 252px minmax(0, 1fr);
+    grid-template-areas:
+      "date venue"
+      "date venue"
+      "cal map"
+      ". link";
+    column-gap: 36px;
+    row-gap: 2px;
     color: var(--ink);
   }
-  .datebox > div { display: flex; flex-direction: column; gap: 2px; }
-  .datebox > .venue { flex: 1 1 320px; min-width: 0; }
-  .map { margin-top: 18px; }
-  .map iframe {
-    display: block;
-    width: 100%;
-    height: 280px;
+  .datebox > .cal,
+  .datebox > .map { margin-top: 14px; }
+  .datebox > .maplink { margin-top: 6px; }
+  .fact {
+    display: grid;
+    grid-template-rows: subgrid;
+    align-self: stretch;
+    min-width: 0;
+  }
+  .fact.date { grid-area: date; }
+  .fact.venue { grid-area: venue; }
+  .fact.date .value { align-self: end; }
+  .map {
+    grid-area: map;
+    position: relative;
+    align-self: stretch;
     border: 1px solid var(--line);
     background: var(--tint);
+    min-width: 0;
+    min-height: 0;
   }
-  .map a {
-    display: inline-block;
-    margin-top: 8px;
+  .map iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  .maplink {
+    grid-area: link;
+    justify-self: start;
+    align-self: start;
     font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
     font-size: 13px;
     font-weight: 600;
@@ -84,7 +110,8 @@
   }
   .datebox .value { font-weight: 600; line-height: 1.35; }
   .cal {
-    margin-top: 18px;
+    grid-area: cal;
+    align-self: start;
     width: 252px;
     padding: 12px 10px 10px;
     border: 1px solid var(--line);
@@ -181,7 +208,8 @@
   .contact a,
   .program a { color: var(--navy); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--navy); }
   .contact a:focus-visible,
-  .program a:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; }
+  .program a:focus-visible,
+  .maplink:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; }
 
   footer {
     background: var(--navy);
@@ -190,6 +218,24 @@
     font-size: 14px;
   }
 
+  @media (max-width: 720px) {
+    .datebox {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "date"
+        "cal"
+        "venue"
+        "map"
+        "link";
+      row-gap: 0;
+    }
+    .fact { display: flex; flex-direction: column; gap: 2px; }
+    .fact.date .value { align-self: auto; }
+    .fact.venue { margin-top: 28px; }
+    .datebox > .cal,
+    .datebox > .map { margin-top: 16px; }
+    .datebox > .maplink { margin-top: 8px; }
+  }
   @media (max-width: 520px) {
     header { padding: 48px 0 36px; }
     section { padding: 40px 0; }
@@ -203,10 +249,15 @@
     <p class="eyebrow">A session of the 101st KPPY Workshop</p>
     <h1><span class="young">Young</span><span class="kppy">KPPY</span></h1>
     <div class="datebox mono">
-      <div>
+      <div class="fact date">
         <span class="label">Date</span>
         <span class="value">November 13, 2026 (Friday)</span>
-        <div class="cal" aria-hidden="true">
+      </div>
+      <div class="fact venue">
+        <span class="label">Venue</span>
+        <span class="value">B06, College of Natural Sciences<br>Kyungpook National University, Daegu</span>
+      </div>
+      <div class="cal" aria-hidden="true">
           <p class="cal-month">November</p>
           <div class="cal-grid">
             <span class="cal-dow sun">S</span><span class="cal-dow">M</span><span class="cal-dow">T</span><span class="cal-dow">W</span><span class="cal-dow">T</span><span class="cal-dow">F</span><span class="cal-dow">S</span>
@@ -233,19 +284,14 @@
             <span class="cal-day sun">29</span><span class="cal-day">30</span>
           </div>
         </div>
+      <div class="map">
+        <iframe
+          title="College of Natural Sciences, Kyungpook National University"
+          src="https://www.google.com/maps/embed?pb=!1m3!2m1!1s%EA%B2%BD%EB%B6%81%EB%8C%80%ED%95%99%EA%B5%90%20%EC%9E%90%EC%97%B0%EA%B3%BC%ED%95%99%EB%8C%80%ED%95%99!6i18!3m1!1sen!5m1!1sen"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
-      <div class="venue">
-        <span class="label">Venue</span>
-        <span class="value">B06, College of Natural Sciences<br>Kyungpook National University, Daegu</span>
-        <div class="map">
-          <iframe
-            title="B06, College of Natural Sciences, Kyungpook National University"
-            src="https://www.google.com/maps/embed?pb=!1m3!2m1!1s35.8903656,128.6066322!6i18!3m1!1sen!5m1!1sen"
-            allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade"></iframe>
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=35.8903656,128.6066322">Open in Google Maps</a>
-        </div>
-      </div>
+      <a class="maplink" href="https://maps.app.goo.gl/ncyNc1qTTfH7rkHH9">Open in Google Maps</a>
     </div>
   </div>
 </header>
@@ -314,6 +360,20 @@
     Young KPPY · November 13, 2026 · Kyungpook National University
   </div>
 </footer>
+
+<script>
+(function () {
+  var cal = document.querySelector(".cal");
+  var map = document.querySelector(".map");
+  if (!cal || !map) return;
+  var fit = function () {
+    map.style.height = cal.offsetHeight + "px";
+  };
+  fit();
+  if ("ResizeObserver" in window) new ResizeObserver(fit).observe(cal);
+  else window.addEventListener("resize", fit);
+})();
+</script>
 
 </body>
 </html>
