@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Young KPPY — November 13, 2026, Kyungpook National University</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root {
     --paper: #ffffff;
@@ -203,11 +204,53 @@
   .program tr.pause td { color: var(--muted); font-weight: 500; }
   .program-note { margin-top: 16px; color: var(--muted); font-size: 15px; }
 
+  /* Accommodation */
+  .stay-intro { max-width: 640px; margin-bottom: 24px; }
+  .hotels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    list-style: none;
+  }
+  .hotel {
+    border: 1px solid var(--line);
+    padding: 20px 22px 18px;
+    min-width: 0;
+  }
+  .hotel .name { font-weight: 600; }
+  .hotel .near { display: block; margin-top: 6px; color: var(--muted); font-size: 15px; }
+  .hotel .time { display: block; margin-top: 14px; color: var(--navy); font-size: 13px; }
+  .stay-map {
+    margin-top: 20px;
+    height: 380px;
+    border: 1px solid var(--line);
+    background: var(--tint);
+  }
+  .stay-map .leaflet-tooltip {
+    font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 3px 7px;
+  }
+  .stay-map .leaflet-tooltip.venue { color: var(--navy); }
+  .stay-map .leaflet-container { font-family: inherit; }
+  @media (max-width: 720px) {
+    .hotels { grid-template-columns: 1fr; }
+    .stay-map { height: 300px; }
+  }
+
   /* Contact */
   .about a,
   .contact a,
+  .stay a,
   .program a { color: var(--navy); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid var(--navy); }
   .contact a:focus-visible,
+  .stay a:focus-visible,
   .program a:focus-visible,
   .maplink:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; }
 
@@ -347,6 +390,36 @@
   </div>
 </section>
 
+<section class="stay">
+  <div class="wrap">
+    <h2>Accommodation</h2>
+    <p class="stay-intro">If you are staying on for the main workshop on Saturday, November 14, these hotels are close to the university or to Dongdaegu Station. Taxi times to the venue are approximate. Click a hotel name to open it in Google Maps.</p>
+    <ul class="hotels">
+      <li class="hotel">
+        <a class="name" href="https://www.google.com/maps/search/?api=1&amp;query=%ED%98%B8%ED%85%94+%EC%9D%B8%ED%84%B0%EB%B6%88%EA%B3%A0+%EC%97%91%EC%8A%A4%EC%BD%94+%EB%B6%81%EA%B5%AC+%EC%9C%A0%ED%86%B5%EB%8B%A8%EC%A7%80%EB%A1%9C+80">Hotel Inter-Burgo EXCO</a>
+        <span class="near">Across from EXCO, Buk-gu</span>
+        <span class="time mono">Taxi 15–20 min</span>
+      </li>
+      <li class="hotel">
+        <a class="name" href="https://www.google.com/maps/search/?api=1&amp;query=%EB%8F%99%EB%8C%80%EA%B5%AC%EC%97%AD+%EC%9D%B4%EC%8A%A4%ED%84%B4%ED%98%B8%ED%85%94+%EB%8F%99%EB%B6%80%EB%A1%9C22%EA%B8%B8+24">Dongdaegu Station Eastern Hotel</a>
+        <span class="near">5 min from Dongdaegu Station (KTX)</span>
+        <span class="time mono">Taxi 15–20 min</span>
+      </li>
+      <li class="hotel">
+        <a class="name" href="https://www.google.com/maps/search/?api=1&amp;query=%EB%A6%AC%EB%B2%84%ED%8B%B4%ED%98%B8%ED%85%94+%EB%8C%80%EA%B5%AC+%EA%B2%BD%EC%83%81%EA%B0%90%EC%98%81%EA%B8%B8+193">Rivertain Hotel</a>
+        <span class="near">Downtown, 5 min from Jungangno Station</span>
+        <span class="time mono">Taxi 10–15 min</span>
+      </li>
+      <li class="hotel">
+        <a class="name" href="https://www.google.com/maps/search/?api=1&amp;query=%ED%86%A0%EC%9A%94%EC%BD%94%EC%9D%B8+%EB%8C%80%EA%B5%AC+%EB%8F%99%EC%84%B1%EB%A1%9C+%EB%8F%99%EC%84%B1%EB%A1%9C1%EA%B8%B8+15">Toyoko Inn Daegu Dongseong-ro</a>
+        <span class="near">Downtown, 3 min from Banwoldang Station</span>
+        <span class="time mono">Taxi 15–20 min</span>
+      </li>
+    </ul>
+    <div id="stay-map" class="stay-map" aria-label="Map of the venue and the four hotels"></div>
+  </div>
+</section>
+
 <section class="contact">
   <div class="wrap">
     <h2>Contact</h2>
@@ -372,6 +445,35 @@
   fit();
   if ("ResizeObserver" in window) new ResizeObserver(fit).observe(cal);
   else window.addEventListener("resize", fit);
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function () {
+  if (!window.L || !document.getElementById("stay-map")) return;
+  var venue = [35.8902948, 128.6066381];
+  var hotels = [
+    { name: "Inter-Burgo EXCO", at: [35.907038, 128.611328], dir: "right" },
+    { name: "Eastern Hotel",    at: [35.874462, 128.626609], dir: "right" },
+    { name: "Rivertain Hotel",  at: [35.872063, 128.598016], dir: "left" },
+    { name: "Toyoko Inn",       at: [35.866887, 128.594516], dir: "right" }
+  ];
+  var map = L.map("stay-map", { scrollWheelZoom: false, zoomSnap: 0.25 });
+  var esri = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/";
+  L.tileLayer(esri + "World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 16,
+    attribution: 'Tiles &copy; Esri'
+  }).addTo(map);
+  L.tileLayer(esri + "World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}", { maxZoom: 16 }).addTo(map);
+  var pts = [venue];
+  hotels.forEach(function (h) {
+    L.circleMarker(h.at, { radius: 7, color: "#1b3a6b", weight: 2, fillColor: "#ffffff", fillOpacity: 1 })
+      .addTo(map).bindTooltip(h.name, { permanent: true, direction: h.dir, offset: [0, 0] });
+    pts.push(h.at);
+  });
+  L.circleMarker(venue, { radius: 9, color: "#1b3a6b", weight: 2, fillColor: "#1b3a6b", fillOpacity: 1 })
+    .addTo(map).bindTooltip("Venue<br>College of Natural Sciences", { permanent: true, direction: "right", className: "venue" });
+  map.fitBounds(pts, { padding: [48, 48] });
 })();
 </script>
 
