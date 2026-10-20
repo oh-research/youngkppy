@@ -395,6 +395,7 @@
     <h2>Accommodation</h2>
     <p class="stay-intro">If you are staying on for the main workshop on Saturday, November 14, these hotels are close to the university or to Dongdaegu Station. Taxi times to the venue are approximate. Click a hotel name to open it in Google Maps.</p>
     <ul class="hotels">
+      <li class="hotel"><a class="name" href="https://www.google.com/maps/search/?api=1&amp;query=%EB%B8%8C%EB%9D%BC%EC%9A%B4%EB%8F%84%ED%8A%B8+%EA%B2%BD%EB%B6%81%EB%8C%80%EC%A0%90+%EB%8C%80%EA%B5%AC%EC%B2%B4%EC%9C%A1%EA%B4%80%EB%A1%9C+2">Brown Dot Hotel Kyungpook Univ.</a><span class="near">West side of campus, Buk-gu</span><span class="time mono">On foot 15 min</span></li>
       <li class="hotel">
         <a class="name" href="https://www.google.com/maps/search/?api=1&amp;query=%ED%98%B8%ED%85%94+%EC%9D%B8%ED%84%B0%EB%B6%88%EA%B3%A0+%EC%97%91%EC%8A%A4%EC%BD%94+%EB%B6%81%EA%B5%AC+%EC%9C%A0%ED%86%B5%EB%8B%A8%EC%A7%80%EB%A1%9C+80">Hotel Inter-Burgo EXCO</a>
         <span class="near">Across from EXCO, Buk-gu</span>
@@ -416,7 +417,7 @@
         <span class="time mono">Taxi 15–20 min</span>
       </li>
     </ul>
-    <div id="stay-map" class="stay-map" aria-label="Map of the venue and the four hotels"></div>
+    <div id="stay-map" class="stay-map" aria-label="Map of the venue and the five hotels"></div>
   </div>
 </section>
 
@@ -453,6 +454,7 @@
   if (!window.L || !document.getElementById("stay-map")) return;
   var venue = [35.8902948, 128.6066381];
   var hotels = [
+    { name: "Brown Dot",        at: [35.890162, 128.601078], dir: "left" },
     { name: "Inter-Burgo EXCO", at: [35.907038, 128.611328], dir: "right" },
     { name: "Eastern Hotel",    at: [35.874462, 128.626609], dir: "right" },
     { name: "Rivertain Hotel",  at: [35.872063, 128.598016], dir: "left" },
